@@ -127,8 +127,6 @@ Apr 14 18:20:21.259  INFO image_tag_constraint_controller: Started http server: 
 
 10. **Deploy the debug pods to verify**
 
-We see that the image in the manifest file of debug.yaml has image as `image: "nginx:>= 1.16, < 1.18"`. This is the constraint. This controller will resolve/find a image satisfying this constraint and deploy the pod.
-
 ````bash
 $ kubectl apply -f deploy/debug.yaml
 
