@@ -127,7 +127,7 @@ Apr 14 18:20:21.259  INFO image_tag_constraint_controller: Started http server: 
 
 10. **Deploy the debug pods to verify**
 
-````bash
+```bash
 $ kubectl apply -f deploy/debug.yaml
 
 # verify
@@ -138,4 +138,4 @@ $ kubectl get po
 
 ```bash
 just cluster-down
-````
+```
