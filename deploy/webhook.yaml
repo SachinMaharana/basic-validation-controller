@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: basic-validation-controller
+webhooks:
+  - name: basic-validation-controller.default.svc.cluster.local
+    clientConfig:
+      caBundle: ${CA_BUNDLE}
+      service:
+        name: basic-validation-controller
+        namespace: default
+        port: 443
+        path: "/mutate"
+    failurePolicy: Ignore
+    rules:
+      - operations:
+          - "CREATE"
+        apiGroups:
+          - ""
+        apiVersions:
+          - "v1"
+        resources:
+          - "pods"
+    sideEffects: None
+    admissionReviewVersions: ["v1beta1", "v1"]

@@ -1,0 +1,16 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+runtimeConfig:
+  "admissionregistration.k8s.io/v1": "true"
+kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiServer:
+        extraArgs:
+          enable-admission-plugins: NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook
+
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+  - role: worker

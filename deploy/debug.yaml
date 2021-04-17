@@ -1,0 +1,45 @@
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: debug
+# spec:
+#   selector:
+#     matchLabels:
+#       app: debug
+#   template:
+#     metadata:
+#       labels:
+#         app: debug
+#         test: random
+#     spec:
+#       containers:
+#         - name: debug
+#           image: "nginx:>= 1.16, < 1.18"
+#           resources:
+#             limits:
+#               memory: "128Mi"
+#               cpu: "500m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: another
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: another
+  template:
+    metadata:
+      labels:
+        app: another
+    spec:
+      containers:
+        - name: another
+          image: "busybox:1.29"
+          command:
+            - sleep
+          args:
+            - "1000"

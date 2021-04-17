@@ -1,0 +1,11 @@
+FROM ubuntu
+
+RUN apt-get update \
+    && apt-get install -y ca-certificates tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY basic-validation-controller /basic-validation-controller
+
+EXPOSE 8443
+
+CMD ["/basic-validation-controller"]

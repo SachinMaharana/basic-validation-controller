@@ -1,0 +1,28 @@
+[package]
+name = "basic-validation-controller"
+version = "0.1.0"
+authors = ["SachinMaharana <sachin.nicky@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+# kube = { git = "https://github.com/clux/kube-rs", rev = "1f2aad114f9fee267a835dfd3539f0d0a6f7c7e7", default-features = false, features = ["admission", "rustls-tls"] }
+kube = { path = "../kube-rs/kube", default-features = false, features = ["admission", "rustls-tls"] }
+actix-rt = "2.1.0"
+actix-web = { version = "3", features = ["rustls"] }
+anyhow = "1.0.40"
+rustls = "0.18"
+k8s-openapi = { version = "0.11.0", default-features = false, features = ["v1_20"] }
+serde = { version = "1.0.125", features = ["derive"] }
+serde_json = "1.0.64"
+forgiving-semver = "0.11.0"
+json-patch = "0.2.6"
+reqwest = { version = "0.11.3", features = ["blocking"] }
+tracing = "0.1.25"
+tracing-subscriber = "0.2.17"
+regex = "1.4.5"
+log = "0.4.0"
+env_logger = "0.8.3"
+envy = "0.4.2"
+
+[dependencies.serde_with]
+version = "1.8.0"
