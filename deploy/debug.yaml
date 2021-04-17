@@ -1,26 +1,25 @@
-
-# ---
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: debug
-# spec:
-#   selector:
-#     matchLabels:
-#       app: debug
-#   template:
-#     metadata:
-#       labels:
-#         app: debug
-#         test: random
-#     spec:
-#       containers:
-#         - name: debug
-#           image: "nginx:>= 1.16, < 1.18"
-#           resources:
-#             limits:
-#               memory: "128Mi"
-#               cpu: "500m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug
+spec:
+  selector:
+    matchLabels:
+      app: debug
+  template:
+    metadata:
+      labels:
+        app: debug
+        test: random
+    spec:
+      containers:
+        - name: debug
+          image: "docker.io/nginx:1.19"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 ---
 apiVersion: apps/v1
 kind: Deployment
