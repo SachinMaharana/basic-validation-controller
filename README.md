@@ -84,13 +84,12 @@ webhook-tls-certs   Opaque   4      34s
 ```bash
 $ just ca
 
-```
 
 $ kubectl get mutatingwebhookconfiguration.admissionregistration.k8s.io
 NAME WEBHOOKS AGE
 basic-validation-controller 1 27s
 
-````
+```
 
 7. **Build and create docker image**
 
@@ -101,7 +100,7 @@ $ just bld
 $ docker images
 REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE
 sachinnicky/basic-validation-controller   latest              38baba376694        1 hours ago         98.8MB
-````
+```
 
 8. **Make it available for the cluster**
 
