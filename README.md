@@ -32,6 +32,8 @@ Assuming the prerequisites has been met/installed, let's continue with the workf
 
 2. **Update variables in Justfile**
 
+A Justfile is provided in the repo to manage this project.
+
 `docker_user` is the username of your dockerhub account. We will use it to tag our images.
 
 `cluster_name` is the name of the cluster.
