@@ -40,6 +40,7 @@ async fn handle_mutate(
         reqst.method(),
         reqst.uri(),
     );
+
     if let Some(content_type) = reqst.head().headers.get("content-type") {
         if content_type != "application/json" {
             let msg = format!("invalid content-type: {:?}", content_type);
@@ -47,6 +48,8 @@ async fn handle_mutate(
             return HttpResponse::BadRequest().json(msg);
         }
     }
+
+    dbg!(body.clone());
 
     let req: AdmissionRequest<_> = match body.into_inner().try_into() {
         Ok(req) => req,
@@ -97,7 +100,7 @@ async fn handle_mutate(
         for reg in &whitelisted_registries {
             let pattern = format!("{}/", reg.clone());
             info!(
-                "reg, pattern, iwemage Name {}: {}: {}: >",
+                "reg, pattern, image name {}: {}: {}: >",
                 reg, pattern, image_name
             );
             if image_name.starts_with(pattern.as_str()) {

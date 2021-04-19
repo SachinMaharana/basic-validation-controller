@@ -5,6 +5,10 @@ images of type `docker.io/nginx:1.19`, `gcr.io/nginx:1.19` are whitelisted but i
 
 The purpose is geared more towards learning how the the webhook controller works and the complete setup to be done so as to build more complex webhooks.
 
+Golang implmentation of the controller:
+
+https://github.com/SachinMaharana/basic-validation-controller/tree/master/golang
+
 ## Prerequisites
 
 - docker - 19.03.12+ (https://docs.docker.com/engine/install/ubuntu/)

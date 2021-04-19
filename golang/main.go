@@ -75,6 +75,7 @@ func handleValidate(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	respBytes, err := json.Marshal(respReview)
+	// log.Println(respBytes)
 	if err != nil {
 		sendErr(w, fmt.Errorf("could not generate response: %v", err))
 		return
