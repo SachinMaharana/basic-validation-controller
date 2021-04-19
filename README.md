@@ -1,6 +1,8 @@
 ## Basic Validation Controller
 
----
+This is a dead simple validation controller for kubernetes that allows imgaes of verfified container registry to be deployed in the cluster.
+images of type `docker.io/nginx:1.19`, `gcr.io/nginx:1.19` are whitelisted but images of tag `nginx:1.19` are disallowed. The list of whitelisted registries is configurable through environment variable. The motivation for such controller aims to allow only trusted, secure images in the cluster. This can also be helpful to prevent docker rate-limting on the number of the images that could be pulled from docker registry.
+
 
 ## Prerequisites
 
