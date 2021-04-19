@@ -6,7 +6,6 @@ use kube::api::{
     admission::{AdmissionRequest, AdmissionResponse, AdmissionReview},
     DynamicObject,
 };
-// use k8s_openapi::apimachinery::pkg::apis::meta::v1::Status;
 use rustls::internal::pemfile::{certs, rsa_private_keys};
 use rustls::{NoClientAuth, ServerConfig};
 use serde::Deserialize;
@@ -37,7 +36,7 @@ async fn handle_mutate(
     body: web::Json<AdmissionReview<DynamicObject>>,
 ) -> impl Responder {
     info!(
-        "Request Recieved: Method={:?}, URL={}",
+        "request recieved: method={:?}, uri={}",
         reqst.method(),
         reqst.uri(),
     );
@@ -98,7 +97,7 @@ async fn handle_mutate(
         for reg in &whitelisted_registries {
             let pattern = format!("{}/", reg.clone());
             info!(
-                "reg, pattern, image Name {}: {}: {}: >",
+                "reg, pattern, iwemage Name {}: {}: {}: >",
                 reg, pattern, image_name
             );
             if image_name.starts_with(pattern.as_str()) {
