@@ -8,25 +8,26 @@ cluster-up:
     sleep "15"
 
 certs:
-    ./gencert.sh
+    ./gencert.sh --service basic-validation-controller --secret webhook-tls-certs --namespace default
+
 ca default=default_namespace:
     #!/bin/bash
-    # echo 'kubectl get  MutatingWebhookConfiguration image-tag-constraint-controller  -ojson | jq '.webhooks[].clientConfig.caBundle="caBundleHere"' | kubectl apply -f -'
     CA_BUNDLE=$(kubectl get secrets -n {{default}} webhook-tls-certs -ojson | jq '.data."caCert.pem"')
     export CA_BUNDLE=${CA_BUNDLE}
     cat deploy/webhook.yaml | envsubst > deploy/webhook-ca.yaml
     kubectl apply -f deploy/webhook-ca.yaml
-    
+
 build:
+    cargo build --release && cp target/release/{{binary}} . && docker build -t {{docker_user}}/{{binary}} -f Dockerfile.alt . 
+    
+build-ci:
     docker build -t {{docker_user}}/{{binary}} .
 
-bld:
-    cargo build --release && cp target/release/{{binary}} . && docker build -t {{docker_user}}/{{binary}} -f Dockerfile.alt . 
 
 load:
     kind --name {{cluster_name}} load docker-image {{docker_user}}/{{binary}}:latest
 
-deploy-up:
+deploy:
     kubectl apply -f deploy/deployment.yaml
     kubectl rollout status deployment/{{binary}}
 
@@ -36,7 +37,7 @@ debug:
 cluster-down:
     kind delete cluster --name {{cluster_name}}
 
-all: cluster-up certs ca bld load deploy
+all: cluster-up certs ca build load deploy
 
 dl:
     kubectl delete -f deploy/deployment.yaml -f deploy/debug.yaml

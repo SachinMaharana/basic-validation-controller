@@ -23,6 +23,7 @@ regex = "1.4.5"
 log = "0.4.0"
 env_logger = "0.8.3"
 envy = "0.4.2"
+futures = "0.3.14"
 
 [dependencies.serde_with]
 version = "1.8.0"

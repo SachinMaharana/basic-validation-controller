@@ -1,8 +1,7 @@
 ## Basic Validation Controller
 
-This is a dead simple validation controller for kubernetes that allows imgaes of verfified container registry to be deployed in the cluster.
+This is a dead simple validation controller for kubernetes that allows images of verfified container registry to be deployed in the cluster.
 images of type `docker.io/nginx:1.19`, `gcr.io/nginx:1.19` are whitelisted but images of tag `nginx:1.19` are disallowed. The list of whitelisted registries is configurable through environment variable. The motivation for such controller aims to allow only trusted, secure images in the cluster. This can also be helpful to prevent docker rate-limting on the number of the images that could be pulled from docker registry.
-
 
 ## Prerequisites
 
@@ -16,11 +15,9 @@ images of type `docker.io/nginx:1.19`, `gcr.io/nginx:1.19` are whitelisted but i
 
 - just - v0.9.0 (https://github.com/casey/just#pre-built-binaries)
 
-* jq
+* jq - jq-1.5-1
 
 ## Complete guide to develop and deploy this admission controller
-
----
 
 Assuming the prerequisites has been met/installed, let's continue with the workflow.
 
@@ -74,8 +71,9 @@ gitter-worker3         Ready    <none>   2m15s   v1.19.1
 # give permission to execute
 $ chmod +x ./gencert.sh
 
-$ ./gencert.sh --service basic-validation-controller --secret webhook-tls-certs --namespace default
+$ just certs
 
+# verify
 $ kubectl get secret webhook-tls-certs
 NAME                TYPE     DATA   AGE
 webhook-tls-certs   Opaque   4      34s
@@ -87,7 +85,7 @@ webhook-tls-certs   Opaque   4      34s
 $ just ca
 
 
-$ kubectl get mutatingwebhookconfiguration.admissionregistration.k8s.io
+$ kubectl get validationwebhookconfiguration.admissionregistration.k8s.io
 NAME WEBHOOKS AGE
 basic-validation-controller 1 27s
 
@@ -96,7 +94,7 @@ basic-validation-controller 1 27s
 7. **Build and create docker image**
 
 ```bash
-$ just bld
+$ just build
 
 # verify
 $ docker images
@@ -115,22 +113,18 @@ $ just load
 9. **Deploy the controller**
 
 ```bash
-$ kubectl apply -f deploy/deployment.yaml
+$ just deploy
 
 # verify
 $ kubectl get pods
 NAME                                               READY   STATUS    RESTARTS   AGE
 basic-validation-controller-764bd94bdc-2kb62   1/1     Running   0          82s
-
-# If deployed succesfully we will se the following logs
-$ kubectl logs  -l app=basic-validation-controller  -f
-Apr 14 18:20:21.259  INFO image_tag_constraint_controller: Started http server: 127.0.0.1:8443
 ```
 
 10. **Deploy the debug pods to verify**
 
 ```bash
-$ kubectl apply -f deploy/debug.yaml
+$ just debug
 
 # verify
 $ kubectl get po

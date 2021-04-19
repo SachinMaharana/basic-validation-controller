@@ -408,6 +408,7 @@ dependencies = [
  "env_logger 0.8.3",
  "envy",
  "forgiving-semver",
+ "futures",
  "json-patch",
  "k8s-openapi",
  "kube",

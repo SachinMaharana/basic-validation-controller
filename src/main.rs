@@ -138,7 +138,7 @@ fn get_image_name(container: &Value) -> Option<&str> {
     Some(image_name)
 }
 
-fn get_containers(pod: &Value) -> Option<&Vec<Value>> {
+async fn get_containers(pod: &Value) -> Option<&Vec<Value>> {
     let containers = match pod.get("containers") {
         Some(containers) => match containers.as_array() {
             Some(container) => container,
