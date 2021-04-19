@@ -5,7 +5,8 @@ default_namespace := "default"
 
 cluster-up:
     kind create cluster --name {{cluster_name}} --image kindest/node:v1.19.1  --config ./kind-config.yaml
-    sleep "15"
+    sleep "10"
+    kubectl wait --namespace kube-system --for=condition=ready pod --selector="tier=control-plane" --timeout=180s
 
 certs:
     ./gencert.sh --service basic-validation-controller --secret webhook-tls-certs --namespace default

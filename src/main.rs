@@ -118,6 +118,10 @@ async fn handle_mutate(
                     "{} image comes from an untrusted registry! Only images from {:?} are allowed",
                     image_name, whitelisted_registries
                 )),
+                reason: Some(format!(
+                    "{} image comes from an untrusted registry! Only images from {:?} are allowed",
+                    image_name, whitelisted_registries
+                )),
                 ..Default::default()
             };
             break;
@@ -130,15 +134,14 @@ fn get_image_name(container: &Value) -> Option<&str> {
     let image_name = match container.get("image") {
         Some(image_name) => {
             let image_name = image_name.as_str();
-            image_name?;
-            image_name.unwrap()
+            image_name?
         }
         None => return None,
     };
     Some(image_name)
 }
 
-async fn get_containers(pod: &Value) -> Option<&Vec<Value>> {
+fn get_containers(pod: &Value) -> Option<&Vec<Value>> {
     let containers = match pod.get("containers") {
         Some(containers) => match containers.as_array() {
             Some(container) => container,
