@@ -13,7 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func HandleHealth(w http.ResponseWriter, r *http.Request) {
+func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(`{"status": "ok"}`))
@@ -88,7 +88,7 @@ func handleValidate(w http.ResponseWriter, r *http.Request) {
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/mutate", handleValidate)
-	mux.HandleFunc("/healthz", HandleHealth)
+	mux.HandleFunc("/healthz", handleHealth)
 	log.Println("Starting Server at 8443")
 	srv := &http.Server{Addr: ":8443", Handler: mux}
 	log.Fatal(srv.ListenAndServeTLS("./certs/serverCert.pem", "./certs/serverKey.pem"))
