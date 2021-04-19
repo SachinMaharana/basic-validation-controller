@@ -24,6 +24,10 @@ build:
 build-ci:
     docker build -t {{docker_user}}/{{binary}} .
 
+build-go:
+    #!/bin/bash
+    pushd golang/ && go build -o basic-validation-controller && popd
+    docker build -t {{docker_user}}/{{binary}} -f golang/Dockerfile golang/
 
 load:
     kind --name {{cluster_name}} load docker-image {{docker_user}}/{{binary}}:latest
