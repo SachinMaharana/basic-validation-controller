@@ -10,7 +10,7 @@ use kube::api::{
 use rustls::internal::pemfile::{certs, rsa_private_keys};
 use rustls::{NoClientAuth, ServerConfig};
 use serde::Deserialize;
-use serde_json::Value;
+use serde_json::{json, Value};
 use serde_with::CommaSeparator;
 use std::convert::TryInto;
 use std::fs::File;
@@ -28,7 +28,7 @@ struct Environment {
 async fn health() -> impl Responder {
     HttpResponse::Ok()
         .header(http::header::CONTENT_TYPE, "application/json")
-        .json("message: i am chugging along just fine!")
+        .json(json!({"message": "ok"}))
 }
 
 #[post("/mutate")]
@@ -61,12 +61,12 @@ async fn handle_mutate(
     let whitelisted_registries = match envy::from_env::<Environment>() {
         Ok(environment) => environment.whitelisted_registries,
         Err(e) => {
-            info!("{}", e.to_string());
+            error!("{}", e.to_string());
             return HttpResponse::InternalServerError().json(e.to_string());
         }
     };
 
-    info!("registries {:?}", whitelisted_registries);
+    info!("whitelisted registries {:?}", whitelisted_registries);
 
     let mut resp = AdmissionResponse::from(&req);
 
@@ -97,7 +97,10 @@ async fn handle_mutate(
 
         for reg in &whitelisted_registries {
             let pattern = format!("{}/", reg.clone());
-            info!("LOG HERE {}: {}: {}: >", reg, pattern, image_name);
+            info!(
+                "reg, pattern, image Name {}: {}: {}: >",
+                reg, pattern, image_name
+            );
             if image_name.starts_with(pattern.as_str()) {
                 debug!(
                     "image {} is whitelisted against {:?}",

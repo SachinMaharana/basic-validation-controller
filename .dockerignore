@@ -1,2 +1,6 @@
 /target
 /misc.txt
+/target
+certs/
+*.pem
+.vscode
