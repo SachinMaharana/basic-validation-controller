@@ -2,6 +2,7 @@
 
 This is a dead simple validating admission webhook controller for kubernetes that allows images of verfied container registry to be deployed in the cluster.
 images of type `docker.io/nginx:1.19`, `gcr.io/nginx:1.19` are whitelisted but images of tag `nginx:1.19` are disallowed. The list of whitelisted registries is configurable through environment variable. The motivation for such controller aims to allow only trusted, secure images in the cluster. This can also be helpful to prevent docker rate-limting on the number of the images that could be pulled from docker registry.
+The purpose is geared more towards how the the controller works and the complete setup as to build more complex webhooks.
 
 ## Prerequisites
 
