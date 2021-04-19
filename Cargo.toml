@@ -5,8 +5,8 @@ authors = ["SachinMaharana <sachin.nicky@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-kube = { git = "https://github.com/clux/kube-rs", rev = "1f2aad114f9fee267a835dfd3539f0d0a6f7c7e7", default-features = false, features = ["admission", "rustls-tls"] }
-# kube = { path = "../kube-rs/kube", default-features = false, features = ["admission", "rustls-tls"] }
+# kube = { git = "https://github.com/clux/kube-rs", rev = "1f2aad114f9fee267a835dfd3539f0d0a6f7c7e7", default-features = false, features = ["admission", "rustls-tls"] }
+kube = { path = "../kube-rs/kube", default-features = false, features = ["admission", "rustls-tls"] }
 actix-rt = "2.1.0"
 actix-web = { version = "3", features = ["rustls"] }
 anyhow = "1.0.40"

@@ -110,18 +110,13 @@ async fn handle_mutate(
         }
         if !whitelisted {
             debug!(
-                "image {} is bloacklisted against {:?}",
+                "image {} is blacklisted against {:?}",
                 image_name, whitelisted_registries
             );
             resp.allowed = false;
             resp.result = Status {
-                code: 403.into(),
                 message: Some(format!(
-                    "{} image comes from an untrusted registry! Only images from {:?} are allowed",
-                    image_name, whitelisted_registries
-                )),
-                reason: Some(format!(
-                    "{} image comes from an untrusted registry! Only images from {:?} are allowed",
+                    "{} image comes from an untrusted registry! only images from {:?} are allowed",
                     image_name, whitelisted_registries
                 )),
                 ..Default::default()
