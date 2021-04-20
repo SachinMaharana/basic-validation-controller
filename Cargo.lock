@@ -1271,6 +1271,7 @@ dependencies = [
 [[package]]
 name = "kube"
 version = "0.52.0"
+source = "git+https://github.com/clux/kube-rs?rev=9ce641324494fe6517e4114ba831793f48eed5a0#9ce641324494fe6517e4114ba831793f48eed5a0"
 dependencies = [
  "base64 0.13.0",
  "bytes 1.0.1",

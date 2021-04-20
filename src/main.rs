@@ -49,8 +49,6 @@ async fn handle_mutate(
         }
     }
 
-    dbg!(body.clone());
-
     let req: AdmissionRequest<_> = match body.into_inner().try_into() {
         Ok(req) => req,
         Err(err) => {
