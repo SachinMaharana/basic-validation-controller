@@ -6,7 +6,7 @@ use kube::api::DynamicObject;
 use kube::core::admission::{AdmissionRequest, AdmissionResponse, AdmissionReview};
 use kube::core::Status;
 use rustls::{Certificate, PrivateKey, ServerConfig};
-use rustls_pemfile::{certs, rsa_private_keys};
+use rustls_pemfile::{certs, pkcs8_private_keys };
 use serde::Deserialize;
 use serde_json::{json, Value};
 use serde_with::CommaSeparator;
@@ -158,7 +158,7 @@ async fn main() -> Result<(), anyhow::Error> {
         .into_iter()
         .map(Certificate)
         .collect();
-    let mut keys: Vec<PrivateKey> = rsa_private_keys(key_file)
+    let mut keys: Vec<PrivateKey> = pkcs8_private_keys(key_file)
         .unwrap()
         .into_iter()
         .map(PrivateKey)

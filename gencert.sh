@@ -3,6 +3,7 @@
 # reference:
 # https://github.com/kubernetes/kubernetes/blob/master/plugin/pkg/admission/webhook/gencerts.sh
 set -o errexit
+set -x
 
 
 CN_BASE="basic-validation-controller"
@@ -72,7 +73,7 @@ set -o errexit
 # Create a server certiticate
 openssl genrsa -out ${TMP_DIR}/serverKey.pem 2048
 # Note the CN is the DNS name of the service of the webhook.
-openssl req -new -key ${TMP_DIR}/serverKey.pem -out ${TMP_DIR}/server.csr -subj "/CN=${basic-validation-controller}.${namespace}.svc" -config ${TMP_DIR}/server.conf -addext "subjectAltName = DNS:${service}.${namespace}.svc"
+openssl req -new -key ${TMP_DIR}/serverKey.pem -out ${TMP_DIR}/server.csr -subj "/CN=${basic-validation-controller}.${namespace}.svc" -config ${TMP_DIR}/server.conf
 
 openssl x509 -req -in ${TMP_DIR}/server.csr -CA ${TMP_DIR}/caCert.pem -CAkey ${TMP_DIR}/caKey.pem -CAcreateserial -out ${TMP_DIR}/serverCert.pem -days 100000 -extensions SAN -extensions v3_req -extfile ${TMP_DIR}/server.conf
 
