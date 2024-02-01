@@ -9,12 +9,13 @@ cluster-up:
     kubectl wait --namespace kube-system --for=condition=ready pod --selector="tier=control-plane" --timeout=180s
 
 certs:
-    ./gencert.sh --service basic-validation-controller --secret webhook-tls-certs --namespace default
+    ./gencert.sh --service basic-validation-controller --secret webhook-tls-certs --namespace {{default_namespace}}
 
 ca default=default_namespace:
     #!/bin/bash
     CA_BUNDLE=$(kubectl get secrets -n {{default}} webhook-tls-certs -ojson | jq '.data."caCert.pem"')
     export CA_BUNDLE=${CA_BUNDLE}
+    export NAMESPACE={{default}}
     cat deploy/webhook.yaml | envsubst > deploy/webhook-ca.yaml
     kubectl apply -f deploy/webhook-ca.yaml
 
@@ -32,12 +33,17 @@ build-go:
 load:
     kind --name {{cluster_name}} load docker-image {{docker_user}}/{{binary}}:latest
 
-deploy:
-    kubectl apply -f deploy/deployment.yaml
-    kubectl rollout status deployment/{{binary}}
+deploy: 
+    #!/bin/bash
+    export NAMESPACE={{default_namespace}}
+    export IMAGE={{docker_user}}/{{binary}}
+    cat deploy/deployment.yaml | envsubst | kubectl apply -f -
+    kubectl rollout status --namesepace {{default_namespace}} deployment/{{binary}}
 
 debug:
-    kubectl apply -f deploy/debug.yaml
+    #!/bin/bash
+    export NAMESPACE={{default_namespace}}
+    cat deploy/debug.yaml | envsubst | kubectl apply -f -
 
 cluster-down:
     kind delete cluster --name {{cluster_name}}
