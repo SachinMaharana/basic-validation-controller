@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: basic-validation-controller
+  namespace: $NAMESPACE
 spec:
   selector:
     matchLabels:
@@ -18,7 +19,7 @@ spec:
 
       containers:
         - name: basic-validation-controller
-          image: sachinnicky/basic-validation-controller
+          image: $IMAGE
           imagePullPolicy: IfNotPresent
           env:
             - name: WHITELISTED_REGISTRIES
@@ -37,6 +38,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: basic-validation-controller
+  namespace: $NAMESPACE
 spec:
   selector:
     app: basic-validation-controller

@@ -1,13 +1,12 @@
+use actix_web::http::header::ContentType;
 use actix_web::{get, http, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use anyhow::anyhow;
 use anyhow::Result;
-use k8s_openapi::apimachinery::pkg::apis::meta::v1::Status;
-use kube::api::{
-    admission::{AdmissionRequest, AdmissionResponse, AdmissionReview},
-    DynamicObject,
-};
-use rustls::internal::pemfile::{certs, rsa_private_keys};
-use rustls::{NoClientAuth, ServerConfig};
+use kube::api::DynamicObject;
+use kube::core::admission::{AdmissionRequest, AdmissionResponse, AdmissionReview};
+use kube::core::Status;
+use rustls::{Certificate, PrivateKey, ServerConfig};
+use rustls_pemfile::{certs, pkcs8_private_keys };
 use serde::Deserialize;
 use serde_json::{json, Value};
 use serde_with::CommaSeparator;
@@ -26,7 +25,7 @@ struct Environment {
 #[get("/health")]
 async fn health() -> impl Responder {
     HttpResponse::Ok()
-        .header(http::header::CONTENT_TYPE, "application/json")
+        .content_type(ContentType::json())
         .json(json!({"message": "ok"}))
 }
 
@@ -116,24 +115,27 @@ async fn handle_mutate(
             );
             resp.allowed = false;
             resp.result = Status {
-                message: Some(format!(
+                message: format!(
                     "{} image comes from an untrusted registry! only images from {:?} are allowed",
                     image_name, whitelisted_registries
-                )),
+                ),
                 ..Default::default()
             };
             break;
         }
     }
-    return HttpResponse::Ok().json(resp.into_review());
+    HttpResponse::Ok().json(resp.into_review())
 }
 
 fn get_image_name(container: &Value) -> Option<&str> {
-    container.get("image").and_then(|image_name| image_name.as_str())
+    container
+        .get("image")
+        .and_then(|image_name| image_name.as_str())
 }
 
 fn get_containers(pod: &Value) -> Option<&Vec<Value>> {
-    pod.get("containers").and_then(|container| container.as_array())
+    pod.get("containers")
+        .and_then(|container| container.as_array())
 }
 
 #[actix_web::main]
@@ -147,15 +149,28 @@ async fn main() -> Result<(), anyhow::Error> {
     tracing_subscriber::fmt().with_env_filter(filter).init();
 
     info!("Started http server: 0.0.0.0:8443");
-    let mut config = ServerConfig::new(NoClientAuth::new());
-    let cert_file = &mut BufReader::new(File::open("./certs/serverCert.pem")?);
-    let key_file = &mut BufReader::new(File::open("./certs/serverKey.pem")?);
-    let cert_chain = certs(cert_file).expect("error in cert");
-    let mut keys = rsa_private_keys(key_file).expect("error in key");
-    config.set_single_cert(cert_chain, keys.remove(0))?;
+    let cert_file = &mut BufReader::new(File::open("/certs/serverCert.pem")?);
+    let key_file = &mut BufReader::new(File::open("/certs/serverKey.pem")?);
+
+    // convert files to key/cert objects
+    let cert_chain = certs(cert_file)
+        .unwrap()
+        .into_iter()
+        .map(Certificate)
+        .collect();
+    let mut keys: Vec<PrivateKey> = pkcs8_private_keys(key_file)
+        .unwrap()
+        .into_iter()
+        .map(PrivateKey)
+        .collect();
+    let config = ServerConfig::builder()
+        .with_safe_defaults()
+        .with_no_client_auth()
+        .with_single_cert(cert_chain, keys.remove(0))
+        .expect("error in config");
 
     HttpServer::new(|| App::new().service(handle_mutate).service(health))
-        .bind_rustls("0.0.0.0:8443", config)?
+        .bind_rustls_021("0.0.0.0:8443", config)?
         .run()
         .await?;
     Ok(())

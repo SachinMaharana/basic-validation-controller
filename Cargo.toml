@@ -5,13 +5,11 @@ authors = ["SachinMaharana <sachin.nicky@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-kube = { git = "https://github.com/clux/kube-rs", rev = "9ce641324494fe6517e4114ba831793f48eed5a0", default-features = false, features = ["admission", "rustls-tls"] }
-# kube = { path = "../kube-rs/kube", default-features = false, features = ["admission", "rustls-tls"] }
+kube = { version = "0.88.1", features = ["admission", "rustls-tls"] }
+k8s-openapi = { version = "0.21.0", features = ["latest"] }
 actix-rt = "2.1.0"
-actix-web = { version = "3", features = ["rustls"] }
+actix-web = { version = "4", features = ["rustls-0_21"] }
 anyhow = "1.0.40"
-rustls = "0.18"
-k8s-openapi = { version = "0.11.0", default-features = false, features = ["v1_20"] }
 serde = { version = "1.0.125", features = ["derive"] }
 serde_json = "1.0.64"
 forgiving-semver = "0.11.0"
@@ -24,6 +22,8 @@ log = "0.4.0"
 env_logger = "0.8.3"
 envy = "0.4.2"
 futures = "0.3.14"
+rustls = "0.21"
+rustls-pemfile = "1"
 
 [dependencies.serde_with]
 version = "1.8.0"
